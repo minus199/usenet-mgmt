@@ -1,0 +1,79 @@
+---
+version: "3.7"
+services:
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jerusalem
+    volumes: #sabnzbd.ini should be relative to docker fs
+      - ${USENET_LOCAL_HOME}/monitored:/monitored
+      - ${USENET_LOCAL_HOME}/config/sabnzbd:/config
+      - ${USENET_LOCAL_HOME}/config/sabnzbd/scripts:/app/sabnzbd/scripts
+      - ${USENET_DOWNLOADS}/complete:/downloads
+      # - ${USENET_DOWNLOADS}/incomplete:/incomplete-downloads #optional
+      # - [the scripts dir]:/docker-entrypoint-initdb.d
+    ports:
+      - 8083:8080
+      - 9093:9090
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jerusalem
+    volumes:
+      - ${USENET_LOCAL_HOME}/config/sonarr:/config
+      - ${USENET_DOWNLOADS}/complete/:/downloads
+      - ${USENET_DOWNLOADS}/complete/tv:/tv
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - VERSION=docker
+      - TZ=Asia/Jerusalem
+      - PLEX_CLAIM=z6Lvgcs2tr77SE9_XdoA
+      - ADVERTISE_IP=http://192.168.1.100:32400/
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ${PLEX_HOME_CONFIG}:/config
+      - ${PLEX_TRANSCODE}:/transcode
+      - $MEDIA_MNT_POINT/multimedia/shows/Comedy:/tv/comedy
+      - $MEDIA_MNT_POINT/multimedia/shows/Drama:/tv/drama
+      - $MEDIA_MNT_POINT/multimedia/shows/Cartoon/keep:/tv/cartoons
+      - $USENET_DOWNLOADS_G1/complete/tv:/tv/downloads
+      - $USENET_DOWNLOADS_G1/complete/movies:/movies.2
+      - $USENET_DOWNLOADS/complete/movies:/movies.3
+      - $MEDIA_MNT_POINT/multimedia/Movies:/movies
+  utorrent:
+    container_name: utorrent
+    image: ekho/utorrent:latest
+    volumes:
+      - ${UTORRENT_HOME_CONFIG}/:/utorrent/settings
+      - ${USENET_DOWNLOADS}/:/data
+    environment:
+      UID: 1000
+      GID: 1000
+      webui: ng
+      dir_autoload_delete: 1
+      dir_download: /data
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

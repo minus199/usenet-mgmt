@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+for img in `grep "image" ./build/sabnzbd.compose.yml | awk '{print $2}'`
+  docker pull $img
+end
