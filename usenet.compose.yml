@@ -9,11 +9,11 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes: #sabnzbd.ini should be relative to docker fs
-      - ${USENET_LOCAL_HOME}/monitored:/monitored
-      - ${USENET_LOCAL_HOME}/config/sabnzbd:/config
-      - ${USENET_LOCAL_HOME}/config/sabnzbd/scripts:/app/sabnzbd/scripts
-      - ${USENET_DOWNLOADS}/complete:/downloads
-      # - ${USENET_DOWNLOADS}/incomplete:/incomplete-downloads #optional
+      - ${MEDIA_SERVER_ROOT}/monitored:/monitored
+      - ${MEDIA_SERVER_CONFIG}/sabnzbd:/config
+      - ${MEDIA_SERVER_CONFIG}/sabnzbd/scripts:/app/sabnzbd/scripts
+      - ${MEDIA_SERVER_MAIN_DOWNLOADS}/complete:/downloads
+      - ${MEDIA_SERVER_MAIN_DOWNLOADS}/incomplete:/incomplete-downloads
       # - [the scripts dir]:/docker-entrypoint-initdb.d
     ports:
       - 8083:8080
@@ -27,9 +27,8 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - ${USENET_LOCAL_HOME}/config/sonarr:/config
-      - ${USENET_DOWNLOADS}/complete/:/downloads
-      - ${USENET_DOWNLOADS}/complete/tv:/tv
+      - ${MEDIA_STORE_0}/multimedia/shows/:/tv
+      - ${MEDIA_SERVER_CONFIG}/sonarr:/config
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -46,21 +45,24 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - ${PLEX_HOME_CONFIG}:/config
-      - ${PLEX_TRANSCODE}:/transcode
-      - $MEDIA_MNT_POINT/multimedia/shows/Comedy:/tv/comedy
-      - $MEDIA_MNT_POINT/multimedia/shows/Drama:/tv/drama
-      - $MEDIA_MNT_POINT/multimedia/shows/Cartoon/keep:/tv/cartoons
-      - $USENET_DOWNLOADS_G1/complete/tv:/tv/downloads
-      - $USENET_DOWNLOADS_G1/complete/movies:/movies.2
-      - $USENET_DOWNLOADS/complete/movies:/movies.3
-      - $MEDIA_MNT_POINT/multimedia/Movies:/movies
+      #configs
+      - ${MEDIA_SERVER_CONFIG}/plex:/config
+      - ${MEDIA_SERVER_CONFIG}/plex-transcode:/transcode
+      # shows
+      - ${MEDIA_STORE_0}/multimedia/shows/Comedy:/tv/comedy
+      - ${MEDIA_STORE_0}/multimedia/shows/Drama:/tv/drama
+      - ${MEDIA_STORE_0}/multimedia/shows/cartoons:/tv/cartoons
+      - ${MEDIA_STORE_0}/multimedia/shows/Doco:/tv/doco
+      #movies
+      - $MEDIA_STORE_1/media/movies:/movies
+      
   utorrent:
     container_name: utorrent
     image: ekho/utorrent:latest
     volumes:
+      - ${MEDIA_SERVER_CONFIG}/plex:/utorrent/settings
       - ${UTORRENT_HOME_CONFIG}/:/utorrent/settings
-      - ${USENET_DOWNLOADS}/:/data
+      - ${MEDIA_SERVER_MAIN_DOWNLOADS}/torrents:/data
     environment:
       UID: 1000
       GID: 1000
