@@ -27,7 +27,7 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - ${MEDIA_STORE_0}/multimedia/shows/:/tv
+      - ${MEDIA_STORE_0}/multimedia/shows:/tv
       - ${MEDIA_SERVER_CONFIG}/sonarr:/config
     ports:
       - 8989:8989
@@ -60,8 +60,7 @@ services:
     container_name: utorrent
     image: ekho/utorrent:latest
     volumes:
-      - ${MEDIA_SERVER_CONFIG}/plex:/utorrent/settings
-      - ${UTORRENT_HOME_CONFIG}/:/utorrent/settings
+      - ${MEDIA_SERVER_CONFIG}/utorrent:/utorrent/settings
       - ${MEDIA_SERVER_MAIN_DOWNLOADS}/torrents:/data
     environment:
       UID: 1000
