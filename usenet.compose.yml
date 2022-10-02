@@ -9,11 +9,11 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes: #sabnzbd.ini should be relative to docker fs
-      - ${MEDIA_SERVER_ROOT}/monitored:/monitored
-      - ${MEDIA_SERVER_CONFIG}/sabnzbd:/config
-      - ${MEDIA_SERVER_CONFIG}/sabnzbd/scripts:/app/sabnzbd/scripts
-      - ${MEDIA_SERVER_MAIN_DOWNLOADS}/complete:/downloads
-      - ${MEDIA_SERVER_MAIN_DOWNLOADS}/incomplete:/incomplete-downloads
+      - "${MEDIA_SERVER_ROOT}/monitored:/monitored"
+      - "${MEDIA_SERVER_CONFIG}/sabnzbd:/config"
+      - "${MEDIA_SERVER_CONFIG}/sabnzbd/scripts:/app/sabnzbd/scripts"
+      - "${MEDIA_SERVER_MAIN_DOWNLOADS}/complete:/downloads"
+      - "${MEDIA_SERVER_MAIN_DOWNLOADS}/incomplete:/incomplete-downloads"
       # - [the scripts dir]:/docker-entrypoint-initdb.d
     ports:
       - 8083:8080
@@ -27,8 +27,8 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - ${MEDIA_STORE_0}/multimedia/shows:/tv
-      - ${MEDIA_SERVER_CONFIG}/sonarr:/config
+      - "${MEDIA_STORE_0}/multimedia/shows:/tv"
+      - "${MEDIA_SERVER_CONFIG}/sonarr:/config"
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -46,22 +46,22 @@ services:
       - PGID=1000
     volumes:
       #configs
-      - ${MEDIA_SERVER_CONFIG}/plex:/config
-      - ${MEDIA_SERVER_CONFIG}/plex-transcode:/transcode
+      - "${MEDIA_SERVER_CONFIG}/plex:/config"
+      - "${MEDIA_SERVER_CONFIG}/plex-transcode:/transcode"
       # shows
-      - ${MEDIA_STORE_0}/multimedia/shows/Comedy:/tv/comedy
-      - ${MEDIA_STORE_0}/multimedia/shows/Drama:/tv/drama
-      - ${MEDIA_STORE_0}/multimedia/shows/cartoons:/tv/cartoons
-      - ${MEDIA_STORE_0}/multimedia/shows/Doco:/tv/doco
+      - "${MEDIA_STORE_0}/multimedia/shows/Comedy:/tv/comedy"
+      - "${MEDIA_STORE_0}/multimedia/shows/Drama:/tv/drama"
+      - "${MEDIA_STORE_0}/multimedia/shows/cartoons:/tv/cartoons"
+      - "${MEDIA_STORE_0}/multimedia/shows/Doco:/tv/doco"
       #movies
-      - $MEDIA_STORE_1/media/movies:/movies
+      - "$MEDIA_STORE_1/media/movies:/movies"
       
   utorrent:
     container_name: utorrent
     image: ekho/utorrent:latest
     volumes:
-      - ${MEDIA_SERVER_CONFIG}/utorrent:/utorrent/settings
-      - ${MEDIA_SERVER_MAIN_DOWNLOADS}/torrents:/data
+      - "${MEDIA_SERVER_CONFIG}/utorrent:/utorrent/settings"
+      - "${MEDIA_SERVER_MAIN_DOWNLOADS}/torrents:/data"
     environment:
       UID: 1000
       GID: 1000
