@@ -1,0 +1,10 @@
+set -gx MEDIA_ROOT "/media/minus/media.storage"
+set -gx MEDIA_STORE_0 "$MEDIA_ROOT.1"
+set -gx MEDIA_STORE_1 "$MEDIA_ROOT.2"
+
+set -gx MEDIA_SERVER_ROOT "$MEDIA_STORE_1/storage/media-server"
+set -gx MEDIA_SERVER_MAIN_DOWNLOADS "$MEDIA_SERVER_ROOT/downloads"
+set -gx MEDIA_SERVER_CONFIG "$MEDIA_SERVER_ROOT/config"
+
+set -gx PLEX_TRANSCODE "$MEDIA_SERVER_CONFIG/plex-transcode"
+
