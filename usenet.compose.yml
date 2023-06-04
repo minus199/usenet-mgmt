@@ -28,9 +28,25 @@ services:
       - TZ=Asia/Jerusalem
     volumes:
       - "${MEDIA_STORE_0}/multimedia/shows:/tv"
+      - "${MEDIA_SERVER_MAIN_DOWNLOADS}/complete:/downloads"
       - "${MEDIA_SERVER_CONFIG}/sonarr:/config"
     ports:
       - 8989:8989
+    restart: unless-stopped
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - AUTO_UPDATE=true #optional
+      - RUN_OPTS= #optional
+    volumes:
+      - "${MEDIA_SERVER_CONFIG}/jackett:/config"
+      - "${MEDIA_SERVER_MAIN_DOWNLOADS}/complete:/downloads"
+    ports:
+      - 9117:9117
     restart: unless-stopped
   plex:
     image: lscr.io/linuxserver/plex:latest
@@ -61,7 +77,7 @@ services:
     image: ekho/utorrent:latest
     volumes:
       - "${MEDIA_SERVER_CONFIG}/utorrent:/utorrent/settings"
-      - "${MEDIA_SERVER_MAIN_DOWNLOADS}/torrents:/data"
+      - "${MEDIA_SERVER_MAIN_DOWNLOADS}/complete:/data"
     environment:
       UID: 1000
       GID: 1000
